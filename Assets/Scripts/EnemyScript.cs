@@ -18,5 +18,7 @@ public class EnemyScript : MonoBehaviour
     {
       hp = newHp;
     }
+
+    GameManagerScript.instance.PlayHitMarkerSoundEffect();
   }
 }

@@ -8,6 +8,10 @@ public class AirMovementScript : MonoBehaviour
   [Min(0f)]
   float speed = 1f;
 
+  [SerializeField]
+  [Min(0f)]
+  float turnRate = .5f;
+
   Rigidbody? rb;
 
   public void Move(Vector3 relativeVector)
@@ -24,6 +28,25 @@ public class AirMovementScript : MonoBehaviour
       + transform.up * relativeVector.y;
 
     rb.AddForce(newVector * speed);
+
+    var rbRot = rb.rotation;
+    // var rbVel = rb.velocity;
+
+    var rbVel = new Vector3
+    {
+      x = rb.velocity.x,
+      z = rb.velocity.z,
+    };
+
+    if (rbVel.magnitude > .1f)
+    {
+      var direction = Vector3.SignedAngle(-rbVel, transform.forward, Vector3.up);
+
+      if (Mathf.Abs(direction) < 178f)
+      {
+        rb.MoveRotation(Quaternion.Euler(0f, rb.rotation.eulerAngles.y + Mathf.Clamp(direction, -turnRate, turnRate), 0f));
+      }
+    }
   }
 
   void Awake()

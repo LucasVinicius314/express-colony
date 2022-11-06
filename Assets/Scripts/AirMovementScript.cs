@@ -30,7 +30,6 @@ public class AirMovementScript : MonoBehaviour
     rb.AddForce(newVector * speed);
 
     var rbRot = rb.rotation;
-    // var rbVel = rb.velocity;
 
     var rbVel = new Vector3
     {

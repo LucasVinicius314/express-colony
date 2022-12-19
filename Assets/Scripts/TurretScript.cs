@@ -11,6 +11,8 @@ public class TurretScript : MonoBehaviour
 
   [SerializeField]
   GameObject? trailPrefab;
+  [SerializeField]
+  GameObject? projectilePrefab;
 
   [Header("Rotations")]
 
@@ -83,6 +85,10 @@ public class TurretScript : MonoBehaviour
   [SerializeField]
   [Min(0f)]
   float viewRange;
+  [SerializeField]
+  TurretType turretType;
+  [SerializeField]
+  TargetPriorityType targetPriorityType;
 
   List<GameObject> targets = new List<GameObject>();
   GameObject? target;
@@ -105,7 +111,20 @@ public class TurretScript : MonoBehaviour
   {
     while (true)
     {
-      UpdateTargets();
+
+      switch (targetPriorityType)
+      {
+        case TargetPriorityType.closest:
+          break;
+        case TargetPriorityType.random:
+          if (target == null || (target.transform.position - transform.position).magnitude > viewRange)
+          {
+            UpdateTargets();
+          }
+
+          break;
+      }
+
 
       // TODO: Variable retargetting delay
       yield return new WaitForSeconds(.2f);
@@ -150,11 +169,6 @@ public class TurretScript : MonoBehaviour
     }
   }
 
-  void OnTargetDeath()
-  {
-    UpdateTargets();
-  }
-
   bool ShouldShoot()
   {
     return IsAimed && target != null;
@@ -164,11 +178,27 @@ public class TurretScript : MonoBehaviour
   {
     var allTargets = GameObject.FindGameObjectsWithTag("Enemy");
 
-    var potentialTargets = allTargets.Where(v => (v.transform.position - transform.position).magnitude < viewRange);
+    var potentialTargets = allTargets
+      .Where(v => (v.transform.position - transform.position).magnitude < viewRange);
 
     targets = potentialTargets.ToList();
 
-    target = targets.Count == 0 ? null : targets.First();
+    if (targets.Count == 0)
+    {
+      target = null;
+
+      return;
+    }
+
+    switch (targetPriorityType)
+    {
+      case TargetPriorityType.closest:
+        target = targets.OrderBy(v => (v.transform.position - transform.position).magnitude).First();
+        break;
+      case TargetPriorityType.random:
+        target = targets[Random.Range(0, targets.Count - 1)];
+        break;
+    }
   }
 
   void Shoot(GameObject currentTarget)
@@ -176,11 +206,31 @@ public class TurretScript : MonoBehaviour
     // TODO: Variable damage
     // currentTarget.SendMessage(DamageTakenMessage.message, new DamageTakenMessage { damage = 2f, source = gameObject });
 
-    currentTarget.GetComponent<EnemyScript>()?.TakeDamage(20f);
-
-    if (trailPrefab != null)
+    switch (turretType)
     {
-      StartCoroutine(ShowProjectileTrailCoroutine(currentTarget));
+      case TurretType.ballistic:
+        if (projectilePrefab != null && barrelTransform != null)
+        {
+          var projectile = Instantiate(
+            projectilePrefab,
+            barrelTransform.position + barrelTransform.forward / 2,
+            barrelTransform.rotation
+          );
+        }
+
+        break;
+      case TurretType.raycast:
+        if (currentTarget.GetComponent<EnemyScript>()?.TakeDamage(20f) == true)
+        {
+          UpdateTargets();
+        }
+
+        if (trailPrefab != null)
+        {
+          StartCoroutine(ShowProjectileTrailCoroutine(currentTarget));
+        }
+
+        break;
     }
   }
 
@@ -430,7 +480,7 @@ public class TurretScript : MonoBehaviour
     }
   }
 
-  private void Awake()
+  void Awake()
   {
     headTransform = transform.Find("Head");
     barrelTransform = headTransform?.Find("Barrel");

@@ -339,6 +339,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trailPrefab: {fileID: 5339921036827009233, guid: 873e75cedb9dc2241ba719692da4c379,
     type: 3}
+  projectilePrefab: {fileID: 1975088155047965523, guid: 74d6955b0a9bd42408a9685fb8200179,
+    type: 3}
   ElevationSpeed: 30
   MaxElevation: 90
   MaxDepression: 20
@@ -351,6 +353,8 @@ MonoBehaviour:
   DrawDebugRay: 1
   DrawDebugArcs: 0
   viewRange: 20
+  turretType: 0
+  targetPriorityType: 1
 --- !u!1 &4440924733924952567
 GameObject:
   m_ObjectHideFlags: 0

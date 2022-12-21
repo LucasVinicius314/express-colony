@@ -9,9 +9,20 @@ public class GameManagerScript : MonoBehaviour
   public Camera? mainCamera;
   public AudioSource? audioSource;
   public GameObject? currentUnit;
+  public Material? semiTransparentMat;
 
   [SerializeField]
   AudioClip? hitMarkerAudioClip;
+  [SerializeField]
+  AudioClip? gunShotAudioClip;
+
+  public void PlayGunShotSoundEffect()
+  {
+    if (audioSource != null && gunShotAudioClip != null)
+    {
+      audioSource.PlayOneShot(gunShotAudioClip, .07f);
+    }
+  }
 
   public void PlayHitMarkerSoundEffect()
   {

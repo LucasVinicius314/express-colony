@@ -86,6 +86,9 @@ public class TurretScript : MonoBehaviour
   [Min(0f)]
   float viewRange;
   [SerializeField]
+  [Min(0f)]
+  float rps;
+  [SerializeField]
   TurretType turretType;
   [SerializeField]
   TargetPriorityType targetPriorityType;
@@ -140,7 +143,7 @@ public class TurretScript : MonoBehaviour
         Shoot(target!);
 
         // TODO: Variable firing rate
-        yield return new WaitForSeconds(.2f);
+        yield return new WaitForSeconds(1 / rps);
       }
       else
       {
@@ -213,9 +216,11 @@ public class TurretScript : MonoBehaviour
         {
           var projectile = Instantiate(
             projectilePrefab,
-            barrelTransform.position + barrelTransform.forward / 2,
+            barrelTransform.position + barrelTransform.forward,
             barrelTransform.rotation
           );
+
+          GameManagerScript.instance.PlayGunShotSoundEffect();
         }
 
         break;

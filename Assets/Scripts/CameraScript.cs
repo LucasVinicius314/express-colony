@@ -10,6 +10,39 @@ public class CameraScript : MonoBehaviour
 
   Transform? pitchTransform;
   Transform? cameraTransform;
+  [SerializeField]
+  GameObject? turretPrefab;
+  GameObject? turret;
+
+  void HandleBuildOverlay()
+  {
+    RaycastHit hit;
+
+    var camera = GameManagerScript.instance?.mainCamera;
+
+    if (camera == null)
+    {
+      return;
+    }
+
+    var ray = camera.ScreenPointToRay(new Vector2
+    {
+      x = Screen.width / 2,
+      y = Screen.height / 2,
+    });
+
+    Debug.DrawRay(camera.transform.position, camera.transform.forward * 20f, Color.green);
+
+    if (Physics.Raycast(ray, out hit, 20f, 0b10000000))
+    {
+      turret?.SetActive(true);
+      turret?.transform?.SetPositionAndRotation(hit.point, Quaternion.identity);
+    }
+    else
+    {
+      turret?.SetActive(false);
+    }
+  }
 
   void HandleMouseDeltas()
   {
@@ -51,10 +84,27 @@ public class CameraScript : MonoBehaviour
     cameraTransform = transform.Find("CameraPitch/Camera");
   }
 
+  void Start()
+  {
+    if (turretPrefab != null)
+    {
+      turret = Instantiate(turretPrefab);
+
+      foreach (var meshRenderer in turret.GetComponentsInChildren<MeshRenderer>())
+      {
+        meshRenderer.material = GameManagerScript.instance?.semiTransparentMat;
+      }
+
+      turret.SetActive(false);
+    }
+  }
+
   void LateUpdate()
   {
     HandleMouseDeltas();
 
     HandleMouseScrollWheel();
+
+    HandleBuildOverlay();
   }
 }

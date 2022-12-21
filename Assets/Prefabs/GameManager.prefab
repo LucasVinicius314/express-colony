@@ -49,7 +49,9 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   audioSource: {fileID: 0}
   currentUnit: {fileID: 0}
+  semiTransparentMat: {fileID: 2100000, guid: e6a782f49ba91564d98afa4eb21dc021, type: 2}
   hitMarkerAudioClip: {fileID: 8300000, guid: d0a939f442909ac46a3a777894776b01, type: 3}
+  gunShotAudioClip: {fileID: 8300000, guid: 6e0e0695d2e3f7a4d9b2e81571543b87, type: 3}
 --- !u!114 &1969836619110441096
 MonoBehaviour:
   m_ObjectHideFlags: 0

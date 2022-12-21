@@ -350,9 +350,10 @@ MonoBehaviour:
   RightLimit: 120
   IsIdle: 0
   aimedThreshold: 1
-  DrawDebugRay: 1
+  DrawDebugRay: 0
   DrawDebugArcs: 0
-  viewRange: 20
+  viewRange: 40
+  rps: 5
   turretType: 0
   targetPriorityType: 1
 --- !u!1 &4440924733924952567

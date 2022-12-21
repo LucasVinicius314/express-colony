@@ -6,6 +6,8 @@ public class ProjectileScript : MonoBehaviour
 {
   [SerializeField]
   float impulse = 10f;
+  [SerializeField]
+  float spread = .1f;
 
   Rigidbody? rb;
 
@@ -29,9 +31,9 @@ public class ProjectileScript : MonoBehaviour
     if (target.tag == "Enemy")
     {
       target.transform.parent.GetComponent<EnemyScript>()?.TakeDamage(20f);
-
-      Destroy(gameObject);
     }
+
+    Destroy(gameObject);
   }
 
   void Start()
@@ -40,7 +42,10 @@ public class ProjectileScript : MonoBehaviour
 
     if (rb != null)
     {
-      rb.AddForce(transform.forward * impulse, ForceMode.Impulse);
+      var xSpread = Random.Range(-spread, spread) * transform.right;
+      var ySpread = Random.Range(-spread, spread) * transform.up;
+
+      rb.AddForce(transform.forward * impulse + xSpread + ySpread, ForceMode.Impulse);
     }
   }
 }
